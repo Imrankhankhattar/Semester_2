@@ -8,7 +8,6 @@ private:
     node*right;
     node*left;
     int data;
-    int height;
 public:
 
     node()
@@ -16,7 +15,6 @@ public:
         right = NULL;
         left = NULL;
         data = 0;
-        height = 0;
     }
     void setright(node*x)
     {
@@ -30,11 +28,6 @@ public:
     {
         data=z;
     }
-    void setheight(int a)
-    {
-        height = a;
-    }
-
     node* getright()
     {
         return right;
@@ -47,12 +40,6 @@ public:
     {
         return data;
     }
-    int getheight1()
-    {
-        return height;
-    }
-
-
 
 
 }; // END OF CLASS node
@@ -65,100 +52,43 @@ public:
     {
         root=NULL;
     }
-    int max(int a, int b)
-    {
-        if(a>b)
-            return a;
-        else
-            return b;
-    }
 
-     int getheight(node* node)
+    void addavaluer(int u,node*new1,node*i)
     {
-       if(node==NULL)
-        return -1;
-       else
-        return node->getheight1();
-    }
-
-    int getbalancefactor(node* u)
-    {
-        return getheight(u->getleft())-getheight(u->getright());
-    }
-    node* rightrotate(node* x)
-    {
-        node*temp=x->getleft();
-        x->setleft(temp->getright());
-        temp->setright(x);
-        temp->setheight(max(getheight(temp->getleft()),getheight(temp->getright()))+1);
-        x->setheight(max(getheight(x->getleft()),getheight(x->getright()))+1);
-        return temp;
-    } // END OF RIGHT ROTATION
-
-    node* leftrotate(node* x)
-    {
-        node*temp=x->getright();
-        x->setright(temp->getleft());
-        temp->setleft(x);
-        temp->setheight(max(getheight(temp->getleft()),getheight(temp->getright()))+1);
-        x->setheight(max(getheight(x->getleft()),getheight(x->getright()))+1);
-        return temp;
-    } // END OF LEFT ROTATION
-
+        node*temp=i;
+        if(u<temp->getdata())
+        {
+            if(temp->getleft()==NULL)
+            {
+                temp->setleft(new1);
+                return;
+            }
+            else
+                addavaluer(u,new1,temp->getleft());
+        }
+        else if(u>=temp->getdata())
+        {
+            if(temp->getright()==NULL)
+            {
+                temp->setright(new1);
+                return;
+            }
+            else
+                addavaluer(u,new1,temp->getright());
+        }
+    }  // END OF ADD_A_VALUER function
     void addavalue(int a)
     {
-        root=add(root,a);
-    } // END OF ADD_A_VALUE FUNCTION
-
-    node* add(node*start,int key)
-    {
-        int bf;
-        if(start==NULL)
+        node*new1=new node();
+        new1->setdata(a);
+        if(root==NULL)
         {
-           node*temp=new node();
-           temp->setdata(key);
-           start=temp;
-        }
-        else if(key<start->getdata())
-        {
-            start->setleft(add(start->getleft(),key));
-            bf=getbalancefactor(start);
-            if(bf==2 || bf==-2)
-            {
-                 if(start->getleft()->getdata()>key)
-                 {
-                     start=rightrotate(start);
-                 }
-                 else
-                 {
-                     node*temp=start->getleft();
-                   start->setleft(leftrotate(temp));
-                   start=rightrotate(start);
-                 }
-            }
+            root=new1;
+            return;
         }
         else
-        {
-            start->setright(add(start->getright(),key));
-            bf=getbalancefactor(start);
-            if(bf==2 || bf==-2)
-            {
-                 if(start->getright()->getdata()<key)
-                 {
-                     start=leftrotate(start);
-                 }
-                 else
-                 {
-                     node*temp1=start->getright();
-                     start->setright(rightrotate(temp1));
-                     start=leftrotate(start);
-                 }
-            }
-        }
-
-        start->setheight(max(getheight(start->getleft()),getheight(start->getright()))+1);
-        return start;
-    } // End of a recursive addition
+            addavaluer(a,new1,root);
+    } // END OF ADD_A_VALUE FUNCTION
 
     void displayr(node*n)
     {
@@ -168,46 +98,46 @@ public:
         {
             cout << n->getdata() << endl;
             displayr(n->getleft());
-             displayr(n->getright());
+            displayr(n->getright());
         }
 
     }// END OF INNER display FUNCTION
 
-     void displayr_1(node*n1)
+    void displayr_1(node*n1)
     {
         if (n1 == NULL)
-        return;
+            return;
         else
         {
-        displayr_1(n1->getleft());
-        cout << n1->getdata() <<endl;
-        displayr_1(n1->getright());
+            displayr_1(n1->getleft());
+            cout << n1->getdata() <<endl;
+            displayr_1(n1->getright());
         }
     } // END OF IN_ORDER
 
     void display_2(node*n2)
     {
         if (n2 == NULL)
-         return;
-    else
-    {
-     display_2(n2->getleft());
-    display_2(n2->getright());
-    cout << n2->getdata() << endl;
-    }
+            return;
+        else
+        {
+            display_2(n2->getleft());
+            display_2(n2->getright());
+            cout << n2->getdata() << endl;
+        }
     } //END OF POST_ORDER
-
 
     void display()
     {
-         int b;
+        int b;
         cout<< "enter 1 for pre-order" << endl;
         cout << "ENter 2 for in-order" << endl;
         cout << "Enter 3 for post order" << endl;
-        cin>>b;
         cout << "-------------------------" << endl;
+        cin>>b;
+         cout << "-------------------------" << endl;
         if(b==1)
-        displayr(root);
+            displayr(root);
         if(b==2)
             displayr_1(root);
         if(b==3)
@@ -224,119 +154,98 @@ public:
         return minv;
     } //END OF MIN VALUE FUNCTION
 
-   node* deleteNoder(node* root, int key)
-{
-    if (root == NULL)
-        return root;
-    if ( key < root->getdata() )
-        root->setleft(deleteNoder(root->getleft(), key)) ;
-    else if( key > root->getdata() )
-        root->setright(deleteNoder(root->getright(), key)) ;
-    else
+    node* deleteNoder(node* root, int key)
     {
-        if( (root->getleft() == NULL) || (root->getright() == NULL) )
-        {
-            node *temp = root->getleft() ? root->getleft() : root->getright();
 
-            if (temp == NULL)
-            {
-                temp = root;
-                root = NULL;
-            }
-            else
-            *root = *temp;
-        }
+        if (root == NULL)
+            return root;
+
+        if (key < root->getdata())
+            root->setleft(deleteNoder(root->getleft(), key));
+        else if (key > root->getdata())
+            root->setright(deleteNoder(root->getright(), key)) ;
+
         else
         {
+
+            if (root->getleft() == NULL)
+            {
+                node *temp = root->getright();
+                return temp;
+            }
+            else if (root->getright() == NULL)
+            {
+                node *temp = root->getleft();
+                return temp;
+            }
             node* temp = minValueNode(root->getright());
             root->setdata(temp->getdata()) ;
-            root->setright(deleteNoder(root->getright(),temp->getdata())) ;
+            root->setright(deleteNoder(root->getright(), temp->getdata()));
         }
-    }
-    if (root == NULL)
-    return root;
-
-    root->setheight(1 + max(getheight(root->getleft()),getheight(root->getright())));
-    int balance = getbalancefactor(root);
-
-    // Left Left Case
-    if (balance > 1 && getbalancefactor(root->getleft()) >= 0)
-        return rightrotate(root);
-
-    // Left Right Case
-    if (balance > 1 && getbalancefactor(root->getleft()) < 0)
-    {
-        root->setleft(leftrotate(root->getleft())) ;
-        return rightrotate(root);
-    }
-
-    // Right Right Case
-    if (balance < -1 && getbalancefactor(root->getright()) <= 0)
-        return leftrotate(root);
-
-    // Right Left Case
-    if (balance < -1 && getbalancefactor(root->getright()) > 0)
-    {
-        root->setright(rightrotate(root->getright()));
-        return leftrotate(root);
-    }
-
-    return root;
-}   // END OF REMOVEr FUNCTION
+        return root;
+    } // END OF REMOVEr FUNCTION
 
     void deleteNode(int key)
     {
         deleteNoder(root,key);
     }// END OF REMOVEr FUNCTION
 
+
+
+    void search1r(int z,node*temp)
+    {
+        if(z<temp->getdata())
+        {
+            if(temp->getleft()==NULL)
+            {
+                cout<<"Value doesn't Exist"<<endl;
+                return;
+            }
+            temp=temp->getleft();
+            if(z==temp->getdata())
+            {
+                cout<<"Value Exist"<<endl;
+                return;
+            }
+            else
+                search1r(z,temp);
+        }
+        else if(z>=temp->getdata())
+        {
+            if(temp->getright()==NULL)
+            {
+                cout<<"Value doesn't Exist"<<endl;
+                return;
+            }
+            temp=temp->getright();
+            if(temp->getdata()==z)
+            {
+                cout<<"Value Exist"<<endl;
+                return;
+            }
+            else
+                search1r(z,temp);
+        }
+
+
+    }// END OF SEARCH1r FUNCTION
+
     void search1(int z)
     {
         node*temp=new node();
         temp=root;
-         if(root==NULL)
+        if(root==NULL)
         {
             cout << "TREE IS EMPTY" << endl;
+            return;
         }
-         else
+        else if(z==root->getdata())
         {
-            while(true)
-            {
-                if(z==root->getdata())
-                {
-                     cout<<"Value Exist"<<endl;
-                    break;
-                }
-                else if(z<temp->getdata())
-                {
-                    if(temp->getleft()==NULL)
-                    {
-                        cout<<"Value doesn't Exist"<<endl;
-                        break;
-                    }
-                    temp=temp->getleft();
-                    if(temp->getdata()==z)
-                    {
-                         cout<<"Value Exist"<<endl;
-                        break;
-                    }
-                }
-                else if(z>=temp->getdata())
-                {
-                     if(temp->getright()==NULL)
-                    {
-                        cout<<"Value doesn't Exist"<<endl;
-                        break;
-                    }
-                    temp=temp->getright();
-                    if(temp->getdata()==z)
-                    {
-                         cout<<"Value Exist"<<endl;
-                        break;
-                    }
-                }
-            }
-
+            cout<<"Value Exist"<<endl;
+            return;
         }
+        else
+            search1r(z,temp);
 
     } // END OF SEARCH VALUE
 
@@ -357,17 +266,25 @@ int main()
         cout << "--------------------------------------- " << endl;
         if(a==1)
         {
-           /* int x;
-            cout << "ENTER a value to add" << endl;
-            cin >> x;*/
-            obj.addavalue(45);
-             obj.addavalue(9);
-              obj.addavalue(15);
-                obj.addavalue(66);
-                obj.addavalue(77);
-                 obj.addavalue(95);
-                  obj.addavalue(88);
-                   obj.addavalue(70);
+            /*  int x;
+              cout << "ENTER a value to add" << endl;
+              cin >> x;
+              obj.addavalue(x);*/
+            obj.addavalue(10);
+            obj.addavalue(19);
+            obj.addavalue(7);
+            obj.addavalue(21);
+            obj.addavalue(39);
+            obj.addavalue(123);
+            obj.addavalue(77);
+            obj.addavalue(2);
+            obj.addavalue(9);
+            obj.addavalue(91);
+            obj.addavalue(80);
+            obj.addavalue(20);
+            obj.addavalue(25);
+            obj.addavalue(27);
+            obj.addavalue(26);
             cout << "--------------------------------------- " << endl;
             cout<< "enter 11 if you want to proceed" << endl;
             cin >> loop;
@@ -401,7 +318,7 @@ int main()
             cout<< "enter 11 if you want to proceed" << endl;
             cin >> loop;
         } // END OF 4th OPTION
-
     } // end of main loop
     return 0;
 }
+
